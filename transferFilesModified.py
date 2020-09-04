@@ -9,23 +9,24 @@ from tkinter import filedialog
 
 class ParentWindow(Frame):
     def __init__(self,master):
-        Frame.__init__ (self)
+        Frame.__init__ (self,master)
 
         self.master = master
         self.master.resizable(width=True, height=True)
         self.master.geometry('{}x{}'.format(600, 400))
         self.master.title('Check for Modified Files')
         self.master.config(bg='lightgray')
-
         
 
-        
+        self.lbl = Label(self, text = "Open File", font=("Helvetica", 16), fg="black", bg="lightblue")
+        self.lbl.grid(column = 0, row = 1, padx = (20, 0), pady = (0, 20))
+
         self.btnBrowse = Button(self.master, text="Browse Files", width=10, height= 2, command = self.fileDialog)
         self.btnSubmit.grid(row=2, column=1)
 
     def fileDialog(self):
         self.filename = filedialog.askopenfilename(initialdir = "/Users/Student/Desktop/Folder A", title = "Select a file", filetype= (("txt files", "*.txt"),("all files","*.*")))
-        self.label = ttk.Label(self.labelFrame, text = "")
+        self.label = Label(self.label, text = "")
         self.label.grid(column = 1, row = 2)
         self.label.configure(text = self.filename)
                         
