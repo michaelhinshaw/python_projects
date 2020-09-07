@@ -4,7 +4,7 @@ import datetime
 import shutil
 import tkinter
 from tkinter import *
-from tkinter import ttk
+from tkinter import ttk as tk
 from tkinter import filedialog
 
 class ParentWindow(Frame):
@@ -17,6 +17,9 @@ class ParentWindow(Frame):
         self.master.title('Check for Modified Files')
         self.master.config(bg='lightgray')
 
+        self.var_src = StringVar()
+        self.var_dest = StringVar()
+
  
         self.btnBrowseSrc = Button(self.master, text="Browse Source Files", width=30, height= 2, command = self.fileDialog1)
         self.btnBrowseSrc.grid(row=2, column=1)
@@ -24,16 +27,13 @@ class ParentWindow(Frame):
         self.btnBrowseDest = Button(self.master, text="Browse Destination Files", width=30, height= 2, command = self.fileDialog2)
         self.btnBrowseDest.grid(row=4, column=1)
         
-        self.btnGetFile = Button(self.master, text = "Copy Files", width=30, height = 2, command = self.GetFileList)
+        self.btnGetFile = Button(self.master, text = "Copy Files", width=30, height = 2, command = lambda: self.checkFiles())
         self.btnGetFile.grid(row=6, column=1)
 
-        self.btnCopied = Button(self.master, text="Copied Files",width=30, height = 2, command = self.copiedDialog)
-        self.btnCopied.grid(row=8, column=1)
-
-        self.src_path = tk.Entry(self.master,text=self.var_src, width=50, font=("Helvetica",14), fg="#333", bg="#fff")
+        self.src_path = tk.Entry(self.master,text=self.var_src, width=50, font=("Helvetica",14))
         self.src_path.grid(row=2, column = 2)
 
-        self.dest_path = tk.Entry(self.master,text=self.var_dest, width=50, font=("Helvetica",14), fg="#333", bg="#fff")
+        self.dest_path = tk.Entry(self.master,text=self.var_dest, width=50, font=("Helvetica",14))
         self.dest_path.grid(row=4, column=2)
 
         
@@ -61,29 +61,25 @@ class ParentWindow(Frame):
         self.label.configure(text = self.filename)
                                                    
 
-    def GetFileList(path, type):
-        '''
-        return a list of filename matching the given path and file type
-        '''
-        return glob.glob(path + "*" + type)
 
-    originPath = '/Users/Student/Desktop/Folder B/'
-    destinationPath ='/Users/Student/Desktop/Folder A/'
-    fileType= ".txt"
+    def checkFiles(self):
+        src = self.var_src.get()
+        dst = self.var_dest.get()
+        print(src)
+        print(dst)
+        fileList = os.listdir(src)
+        print(fileList)
+        for file in fileList:
+            modifyDate = datetime.datetime.fromtimestamp(os.path.getmtime(file))
+            todaysDate = datetime.datetime.today()
 
-    fileList = GetFileList(originPath, fileType)
+            filePathList = file.split("\\")
+            filename = filePathList[-1]
 
-    for file in fileList:
-        modifyDate = datetime.datetime.fromtimestamp(os.path.getmtime(file))
-        todaysDate = datetime.datetime.today()
+            modifyDateLimit = modifyDate + datetime.timedelta(days=1)
 
-        filePathList = file.split("\\")
-        filename = filePathList[-1]
-
-        modifyDateLimit = modifyDate + datetime.timedelta(days=1)
-
-        if modifyDateLimit > todaysDate:
-            shutil.copy2(file, destinationPath + filename)
+            if modifyDateLimit > todaysDate:
+                shutil.copy2(file, destinationPath + filename)
 
 if __name__ == "__main__":
     root = Tk()
