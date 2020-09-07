@@ -70,7 +70,7 @@ class ParentWindow(Frame):
         fileList = os.listdir(src)
         print(fileList)
         for file in fileList:
-            modifyDate = datetime.datetime.fromtimestamp(os.path.getmtime(file))
+            modifyDate = datetime.datetime.fromtimestamp(os.path.getmtime(src))
             todaysDate = datetime.datetime.today()
 
             filePathList = file.split("\\")
