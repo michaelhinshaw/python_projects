@@ -54,32 +54,29 @@ class ParentWindow(Frame):
         self.dest_path.insert(END, path2)
                 
 
-    def copiedDialog(self):
-        self.filename = filedialog.askdirectory(initialdir = "/Users/Student/Desktop/Folder B", title = "Select a file", filetype = (("txt files", "*.txt"),("all files","*.*")))
-        self.label2 = Label(self.label, text = "")
-        self.label2.grid(column = 2, row = 2)
-        self.label.configure(text = self.filename)
+    
                                                    
 
 
     def checkFiles(self):
         src = self.var_src.get()
         dst = self.var_dest.get()
+        today = datetime.datetime.now()
         print(src)
         print(dst)
         fileList = os.listdir(src)
         print(fileList)
         for file in fileList:
-            modifyDate = datetime.datetime.fromtimestamp(os.path.getmtime(src))
-            todaysDate = datetime.datetime.today()
+            if file.endswith(".txt"):
+                AbsoPath = os.path.join(src, file)
+                modifyDate = datetime.datetime.fromtimestamp(os.path.getmtime(AbsoPath))
+            
 
-            filePathList = file.split("\\")
-            filename = filePathList[-1]
+                filePathList = file.split("\\")
+                filename = filePathList[-1]
 
-            modifyDateLimit = modifyDate + datetime.timedelta(days=1)
-
-            if modifyDateLimit > todaysDate:
-                shutil.copy2(file, destinationPath + filename)
+                if today - modifyDate < datetime.timedelta(days=1):
+                    shutil.copy(AbsoPath, dst)
 
 if __name__ == "__main__":
     root = Tk()
